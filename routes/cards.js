@@ -6,10 +6,12 @@ const router = express.Router();
 
 const cardsPath = path.join(__dirname, '..', 'data', 'cards.json');
 
+const SERVER_ERROR_MESSAGE = 'Ha ocurrido un error en el servidor';
+
 router.get('/', (req, res) => {
   fs.readFile(cardsPath, { encoding: 'utf8' })
     .then((data) => res.send(JSON.parse(data)))
-    .catch(() => res.status(500).send({ message: 'Error al leer los datos de tarjetas' }));
+    .catch(() => res.status(500).send({ message: SERVER_ERROR_MESSAGE }));
 });
 
 module.exports = router;

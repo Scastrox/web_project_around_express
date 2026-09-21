@@ -6,12 +6,14 @@ const router = express.Router();
 
 const usersPath = path.join(__dirname, '..', 'data', 'users.json');
 
+const SERVER_ERROR_MESSAGE = 'Ha ocurrido un error en el servidor';
+
 const readUsers = () => fs.readFile(usersPath, { encoding: 'utf8' }).then((data) => JSON.parse(data));
 
 router.get('/', (req, res) => {
   readUsers()
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Error al leer los datos de usuarios' }));
+    .catch(() => res.status(500).send({ message: SERVER_ERROR_MESSAGE }));
 });
 
 router.get('/:id', (req, res) => {
@@ -26,7 +28,7 @@ router.get('/:id', (req, res) => {
 
       res.send(user);
     })
-    .catch(() => res.status(500).send({ message: 'Error al leer los datos de usuarios' }));
+    .catch(() => res.status(500).send({ message: SERVER_ERROR_MESSAGE }));
 });
 
 module.exports = router;
