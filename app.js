@@ -8,7 +8,8 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/aroundb')
+mongoose
+  .connect('mongodb://localhost:27017/aroundb')
   .then(() => console.log('Conectado a MongoDB'))
   .catch((err) => console.error('Error al conectar con MongoDB:', err));
 
