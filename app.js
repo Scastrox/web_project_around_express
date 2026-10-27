@@ -13,6 +13,8 @@ mongoose
   .then(() => console.log('Conectado a MongoDB'))
   .catch((err) => console.error('Error al conectar con MongoDB:', err));
 
+app.use(express.json());
+
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
