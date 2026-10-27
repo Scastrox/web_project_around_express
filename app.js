@@ -15,6 +15,14 @@ mongoose
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6ae12445ec03712923c33f64',
+  };
+
+  next();
+});
+
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
