@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { BAD_REQUEST, NOT_FOUND } = require('../utils/errors');
+const { CREATED, BAD_REQUEST, NOT_FOUND } = require('../utils/statusCodes');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -28,7 +28,7 @@ const createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Datos de usuario no válidos' });
@@ -39,9 +39,9 @@ const createUser = (req, res, next) => {
 };
 
 const updateUser = (req, res, next, data) => {
-  const hasData = Object.values(data).some((value) => value !== undefined);
+  const providedValues = Object.values(data).filter((value) => value !== undefined);
 
-  if (!hasData) {
+  if (providedValues.length === 0) {
     return res.status(BAD_REQUEST).send({ message: 'Datos de usuario no válidos' });
   }
 

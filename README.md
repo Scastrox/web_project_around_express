@@ -84,7 +84,7 @@ Cuando algo falla, el servidor devuelve un objeto con un único campo `message`.
   - `orFail()` convierte un resultado vacío en un `DocumentNotFoundError`.
   - Los controladores eligen el estado según `err.name` (`ValidationError`,
     `CastError`, `DocumentNotFoundError`).
-  - Los códigos de estado se definen como constantes en `utils/errors.js`.
+  - Los códigos de estado se definen como constantes en `utils/statusCodes.js`.
   - Un middleware de error centralizado responde a las peticiones mal formadas y a los
     errores inesperados; solo estos últimos se registran en la consola.
 - **ESLint** con la guía de estilo de Airbnb, con excepciones documentadas para el campo
@@ -104,7 +104,7 @@ controllers/users.js   Lógica de las rutas de usuarios
 controllers/cards.js   Lógica de las rutas de tarjetas
 models/user.js         Esquema y modelo user
 models/card.js         Esquema y modelo card
-utils/errors.js        Constantes de los códigos de estado de error
+utils/statusCodes.js   Constantes de los códigos de estado HTTP
 utils/validators.js    Expresión regular para validar enlaces
 ```
 

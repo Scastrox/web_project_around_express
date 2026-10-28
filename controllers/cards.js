@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND } = require('../utils/errors');
+const { CREATED, BAD_REQUEST, NOT_FOUND } = require('../utils/statusCodes');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -11,7 +11,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Datos de tarjeta no válidos' });
