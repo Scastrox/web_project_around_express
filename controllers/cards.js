@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { BAD_REQUEST, NOT_FOUND } = require('../utils/errors');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -13,32 +14,59 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Datos de tarjeta no válidos' });
-        return;
+        return res.status(BAD_REQUEST).send({ message: 'Datos de tarjeta no válidos' });
       }
 
-      next(err);
+      return next(err);
     });
 };
 
 const deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'ID de tarjeta no encontrado' });
-        return;
-      }
-
-      res.send(card);
-    })
+    .orFail()
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'ID de tarjeta no válido' });
-        return;
+        return res.status(BAD_REQUEST).send({ message: 'ID de tarjeta no válido' });
       }
 
-      next(err);
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'ID de tarjeta no encontrado' });
+      }
+
+      return next(err);
     });
 };
 
-module.exports = { getCards, createCard, deleteCard };
+const updateLikes = (req, res, next, operator) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { [operator]: { likes: req.user._id } },
+    { new: true },
+  )
+    .orFail()
+    .then((card) => res.send(card))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).send({ message: 'ID de tarjeta no válido' });
+      }
+
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'ID de tarjeta no encontrado' });
+      }
+
+      return next(err);
+    });
+};
+
+const likeCard = (req, res, next) => updateLikes(req, res, next, '$addToSet');
+
+const dislikeCard = (req, res, next) => updateLikes(req, res, next, '$pull');
+
+module.exports = {
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
+};
